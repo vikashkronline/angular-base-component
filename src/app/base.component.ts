@@ -3,10 +3,6 @@ import { OnDestroy } from "@angular/core";
 
 export abstract class ComponentBase implements OnDestroy {
 
-  set subs(subscription: Subscription) {
-    this.subscriptions.add(subscription);
-  }
-
   private subscriptions = new Subscription();
 
   constructor() {};
@@ -15,38 +11,21 @@ export abstract class ComponentBase implements OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  protected subscribe<T>(service: Observable<T>,
-    resultFn: (result: T) => void,
-    errorFn?: (error: any) => void) {
-    this.subs = service.subscribe(resultFn, errorFn || this.errorHandler);
+  protected subscribe(service: Observable<any>,
+    resultFn: (result) => void) {
+    this.subscriptions.add(
+      service.subscribe(resultFn, () => this.errorHandler)
+    );
   }
 
   /**
    * Generic error errorHandler
-   * Can be override by passing third parameter to subscribe()
+   * Can be overriden for specific use.
+   * One can change the implementation of error handling
+   * here if want handle it with catchError() operator
+   * or in custome ErrorHandler
    */
-  private errorHandler(error) {
+  protected errorHandler(error) {
     // TODO: generic error handling
   }
 }
-
-/* Implementation in component is going to be some thing like */
-/**
- * 
- * const product$ = this.productService.getProduct(productId);
- * this.subscribe(product$, product => {
- *  // handle product
- * })
- * 
- * // optionally errorHandler can be passed
- * this.subscribe(product$, product => {
- *  // handle product
- * }, (error) => {
- *  // handle error
- * })
- * 
- * No need to unsubscribe explicitly in ngOnDestroy()
- * No need to type ngOnDestroy() as well
- * No need to use any rxjs operator like take(1), or takeUntil(...)
- * No need to include subsink third party library
- */

@@ -14,35 +14,15 @@ import { of } from 'rxjs';
   selector: 'my-app',
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.css' ],
-  providers: [ ProductService ]
+  providers: [ProductService]
 })
 
-export class AppComponent extends ComponentBase implements OnInit  {
+export class AppComponent implements OnInit  {
   name = 'Angular';
 
-  constructor(private productService: ProductService) {
-    super();
-  }
+  constructor() {}
 
   ngOnInit() {
-    const product$ = this.productService.getProduct(123);
-    this.subscribe(product$, product => {
-      // handle product
-    });
-
-    // optionally also errorHandler can be passed
-    this.subscribe(product$, product => {
-      // handle result
-    },
-    error => {
-      // handle error
-    });
+    
   }
-
-  /* 
-  * No need to unsubscribe explicitly in ngOnDestroy()
-  * No need to type ngOnDestroy() as well
-  * No need to use any rxjs operator like take(1), or takeUntil(...)
-  * No need to include subsink third party library
-  */
 }
