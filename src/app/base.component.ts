@@ -12,9 +12,9 @@ export abstract class ComponentBase implements OnDestroy {
   }
 
   protected subscribe(service: Observable<any>,
-    resultFn: (result) => void) {
+    resultFn: (result) => void, errorFn?: (error) => void) {
     this.subscriptions.add(
-      service.subscribe(resultFn, () => this.errorHandler)
+      service.subscribe(resultFn, errorFn || this.errorHandler)
     );
   }
 
